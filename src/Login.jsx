@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Shield } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { axiosInstance } from './axios'
@@ -26,53 +26,89 @@ const Login = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
-      <form
-        onSubmit={handleLogin}
-        className="w-full max-w-sm p-6 bg-white rounded-lg shadow-sm border"
-      >
-        <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
-
-        <div className="mb-4">
-          <label className="block text-sm mb-1">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring"
-          />
-        </div>
-
-        <div className="mb-6 relative">
-          <label className="block text-sm mb-1">Password</label>
-          <input
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring"
-          />
-          <div
-            className="absolute right-3 top-9 cursor-pointer text-gray-500"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+    <div className="min-h-screen flex">
+      {/* Left branding panel - hidden on small screens */}
+      <div className="hidden lg:flex lg:w-1/2 bg-slate-900 flex-col items-center justify-center p-12 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 to-slate-900" />
+        <div className="relative z-10 text-center">
+          <img src="/Logo.png" alt="Logo" className="w-24 h-24 rounded-full object-cover mx-auto mb-6 ring-4 ring-blue-500/30" />
+          <h1 className="text-3xl font-bold text-white mb-2">Garvita Infrastructure</h1>
+          <p className="text-slate-400 text-lg mb-8">Admin Control Panel</p>
+          <div className="flex items-center justify-center gap-2 text-slate-400 text-sm">
+            <Shield className="w-4 h-4 text-blue-400" />
+            <span>Secure admin access only</span>
           </div>
         </div>
+        {/* decorative circles */}
+        <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-blue-600/10" />
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-blue-600/10" />
+      </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition flex items-center justify-center"
-        >
-          {loading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          ) : (
-            'Login'
-          )}
-        </button>
-      </form>
+      {/* Right form panel */}
+      <div className="flex-1 flex items-center justify-center bg-slate-50 px-6 py-12">
+        <div className="w-full max-w-md">
+          {/* Mobile logo */}
+          <div className="lg:hidden text-center mb-8">
+            <img src="/Logo.png" alt="Logo" className="w-16 h-16 rounded-full object-cover mx-auto mb-3" />
+            <h1 className="text-xl font-bold text-slate-800">Garvita Infrastructure</h1>
+            <p className="text-slate-500 text-sm">Admin Control Panel</p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+            <h2 className="text-2xl font-bold text-slate-800 mb-1">Welcome back</h2>
+            <p className="text-slate-500 text-sm mb-8">Sign in to your admin account</p>
+
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Email address</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="admin@example.com"
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="••••••••"
+                    className="w-full px-4 py-2.5 pr-11 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 transition"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium transition disabled:opacity-60 flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : 'Sign In'}
+              </button>
+            </form>
+          </div>
+
+          <p className="text-center text-xs text-slate-400 mt-6">
+            © 2025 Garvita Infrastructure. All rights reserved.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

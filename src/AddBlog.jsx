@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { axiosInstance } from './axios'
 import toast from 'react-hot-toast'
-import { Loader2, X } from 'lucide-react'
+import { Loader2, X, ImagePlus, Type, AlignLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import Layout from './Layout'
 
 const AddBlog = () => {
   const navigate = useNavigate()
@@ -11,7 +12,6 @@ const AddBlog = () => {
   const [image, setImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [buttonDisabled, setButtonDisabled] = useState(false)
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -38,101 +38,123 @@ const AddBlog = () => {
     }
 
     setLoading(true)
-    setButtonDisabled(true)
-
     const reader = new FileReader()
     reader.readAsDataURL(image)
-
     reader.onloadend = async () => {
       const base64Image = reader.result
-      const data = {
-        title,
-        description,
-        image: base64Image,
-      }
-
       try {
-        await axiosInstance.post('/admin/blogs', data)
+        await axiosInstance.post('/admin/blogs', { title, description, image: base64Image })
         toast.success('Post added successfully')
         navigate('/posts')
       } catch (err) {
         toast.error('Failed to add post')
-      } finally {
         setLoading(false)
-        setButtonDisabled(false)
       }
     }
   }
 
   return (
-    <div className="min-h-screen pt-[90px] px-4 py-10 bg-gray-50">
-      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow p-6 space-y-8">
-        <h2 className="text-2xl font-semibold text-gray-800">Add New Blog Post</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="text-sm font-medium text-gray-700">Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-100 rounded-md border border-gray-300 focus:ring-2 focus:ring-black focus:outline-none"
-              placeholder="Enter blog title"
-            />
-          </div>
+    <Layout>
+      <div className="p-6 md:p-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-slate-800">Create New Post</h1>
+          <p className="text-slate-500 text-sm mt-1">Fill in the details below to publish a new blog post</p>
+        </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-100 rounded-md border border-gray-300 focus:ring-2 focus:ring-black focus:outline-none"
-              placeholder="Enter blog description"
-              rows="4"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mt-2"
-            />
-            {imagePreview && (
-              <div className="relative mt-4">
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="w-full h-[200px] object-cover rounded-md"
+        <div className="max-w-2xl">
+          <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="p-6 space-y-6">
+              {/* Title field */}
+              <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Type className="w-4 h-4 text-slate-400" />
+                  <label className="text-sm font-medium text-slate-700">Title</label>
+                </div>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter blog post title…"
+                  className="w-full px-4 py-2.5 bg-slate-50 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none text-sm transition"
                 />
-                <button
-                  type="button"
-                  onClick={handleImageRemove}
-                  className="absolute top-2 right-2 text-white bg-red-600 p-1 rounded-full"
-                >
-                  <X className="w-5 h-5" />
-                </button>
               </div>
-            )}
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading || buttonDisabled}
-              className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin inline-block" />
-              ) : (
-                'Add Post'
-              )}
-            </button>
-          </div>
-        </form>
+              {/* Description field */}
+              <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <AlignLeft className="w-4 h-4 text-slate-400" />
+                  <label className="text-sm font-medium text-slate-700">Description</label>
+                </div>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Write your blog post content here…"
+                  rows={6}
+                  className="w-full px-4 py-3 bg-slate-50 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none text-sm transition resize-none"
+                />
+              </div>
+
+              {/* Image field */}
+              <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <ImagePlus className="w-4 h-4 text-slate-400" />
+                  <label className="text-sm font-medium text-slate-700">Cover Image</label>
+                </div>
+
+                {imagePreview ? (
+                  <div className="relative rounded-xl overflow-hidden border border-slate-200">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-52 object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleImageRemove}
+                      className="absolute top-3 right-3 bg-white/90 hover:bg-white text-red-600 p-1.5 rounded-full shadow-sm transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                    <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded-md">
+                      {image?.name}
+                    </div>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                    <ImagePlus className="w-8 h-8 text-slate-300 mb-2" />
+                    <p className="text-sm text-slate-400">Click to upload image</p>
+                    <p className="text-xs text-slate-300 mt-1">PNG, JPG, GIF up to 10MB</p>
+                    <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                  </label>
+                )}
+              </div>
+            </div>
+
+            {/* Footer with actions */}
+            <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => navigate('/posts')}
+                className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-50"
+              >
+                {loading ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Publishing…</>
+                ) : (
+                  'Publish Post'
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </Layout>
   )
 }
 
