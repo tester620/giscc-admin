@@ -1,5 +1,5 @@
 import React from 'react'
-import { FileText, Plus, User, TrendingUp, Eye, Edit3, BarChart2, ArrowRight } from 'lucide-react'
+import { FileText, Plus, User, TrendingUp, Eye, Edit3, BarChart2, ArrowRight, CalendarDays, Images } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Layout from './Layout'
 
@@ -61,6 +61,20 @@ const Home = () => {
       description: 'Update your admin credentials',
       onClick: () => navigate('/account'),
       color: 'bg-emerald-600',
+    },
+    {
+      icon: CalendarDays,
+      title: 'Manage Events',
+      description: 'View, add or edit upcoming events',
+      onClick: () => navigate('/events'),
+      color: 'bg-orange-600',
+    },
+    {
+      icon: Images,
+      title: 'Manage Gallery',
+      description: 'Upload and organize gallery images',
+      onClick: () => navigate('/gallery'),
+      color: 'bg-pink-600',
     },
   ]
 
