@@ -32,7 +32,8 @@ const Sidebar = () => {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {navLinks.map(({ to, label, icon: Icon }) => {
+        {navLinks.map(({ to, label, icon }) => {
+          const Icon = icon
           const active = location.pathname === to
           return (
             <Link

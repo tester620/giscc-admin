@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { axiosInstance } from './axios'
 import { Pencil, Loader2, Save, Trash2, X, Check, ArrowLeft, ImageOff } from 'lucide-react'
@@ -49,7 +49,7 @@ const PostDetails = () => {
   const [description, setDescription] = useState('')
   const [confirmOpen, setConfirmOpen] = useState(false)
 
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     setLoading(true)
     setError(false)
     try {
@@ -57,12 +57,12 @@ const PostDetails = () => {
       setPost(res.data)
       setTitle(res.data.title)
       setDescription(res.data.description)
-    } catch (err) {
+    } catch {
       setError(true)
     } finally {
       setLoading(false)
     }
-  }
+  }, [id])
 
   const handleUpdate = async () => {
     setUpdating(true)
@@ -71,7 +71,7 @@ const PostDetails = () => {
       toast.success('Post updated successfully')
       setIsEditing(false)
       fetchPost()
-    } catch (err) {
+    } catch {
       toast.error('Failed to update post')
     } finally {
       setUpdating(false)
@@ -84,7 +84,7 @@ const PostDetails = () => {
       await axiosInstance.delete(`/admin/blogs/${id}`)
       toast.success('Post deleted successfully')
       navigate('/posts')
-    } catch (err) {
+    } catch {
       toast.error('Failed to delete post')
     } finally {
       setDeleting(false)
@@ -94,7 +94,7 @@ const PostDetails = () => {
 
   useEffect(() => {
     fetchPost()
-  }, [id])
+  }, [fetchPost])
 
   if (loading) {
     return (

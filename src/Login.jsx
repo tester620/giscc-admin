@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault()
     setLoading(true)
     try {
-      const res = await axiosInstance.post('/auth/login', { email, password })
+      await axiosInstance.post('/auth/login', { email, password })
       toast.success('Login successful')
       navigate('/dashboard')
     } catch (error) {

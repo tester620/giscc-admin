@@ -16,6 +16,10 @@ const AddBlog = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Image must be smaller than 10MB')
+        return
+      }
       const reader = new FileReader()
       reader.onloadend = () => {
         setImage(file)
@@ -46,7 +50,7 @@ const AddBlog = () => {
         await axiosInstance.post('/admin/blogs', { title, description, image: base64Image })
         toast.success('Post added successfully')
         navigate('/posts')
-      } catch (err) {
+      } catch {
         toast.error('Failed to add post')
       } finally {
         setLoading(false)

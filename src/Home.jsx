@@ -3,19 +3,24 @@ import { FileText, Plus, User, TrendingUp, Eye, Edit3, BarChart2, ArrowRight } f
 import { useNavigate } from 'react-router-dom'
 import Layout from './Layout'
 
-const StatCard = ({ icon: Icon, label, value, color, bg }) => (
-  <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4 shadow-sm">
-    <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center flex-shrink-0`}>
-      <Icon className={`w-6 h-6 ${color}`} />
+const StatCard = ({ icon, label, value, color, bg }) => {
+  const Icon = icon
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4 shadow-sm">
+      <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center flex-shrink-0`}>
+        <Icon className={`w-6 h-6 ${color}`} />
+      </div>
+      <div>
+        <p className="text-sm text-slate-500">{label}</p>
+        <p className="text-2xl font-bold text-slate-800">{value}</p>
+      </div>
     </div>
-    <div>
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="text-2xl font-bold text-slate-800">{value}</p>
-    </div>
-  </div>
-)
+  )
+}
 
-const QuickAction = ({ icon: Icon, title, description, onClick, color }) => (
+const QuickAction = ({ icon, title, description, onClick, color }) => {
+  const Icon = icon
+  return (
   <button
     onClick={onClick}
     className="group bg-white rounded-xl border border-slate-200 p-5 text-left hover:border-blue-300 hover:shadow-md transition-all shadow-sm"
@@ -29,7 +34,8 @@ const QuickAction = ({ icon: Icon, title, description, onClick, color }) => (
       Go <ArrowRight className="w-3 h-3" />
     </div>
   </button>
-)
+  )
+}
 
 const Home = () => {
   const navigate = useNavigate()

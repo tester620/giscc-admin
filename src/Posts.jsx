@@ -14,7 +14,7 @@ const Posts = () => {
     try {
       const res = await axiosInstance.get('/admin/blogs')
       setPosts(res.data)
-    } catch (error) {
+    } catch {
       console.error('Failed to fetch posts')
     } finally {
       setLoading(false)
