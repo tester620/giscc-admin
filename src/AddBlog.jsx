@@ -48,6 +48,7 @@ const AddBlog = () => {
         navigate('/posts')
       } catch (err) {
         toast.error('Failed to add post')
+      } finally {
         setLoading(false)
       }
     }
