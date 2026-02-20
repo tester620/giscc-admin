@@ -1,28 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { axiosInstance } from './axios'
-import { Pencil, Loader2, Save, Trash2, X, Check, ArrowLeft } from 'lucide-react'
+import { Pencil, Loader2, Save, Trash2, X, Check, ArrowLeft, ImageOff } from 'lucide-react'
 import toast from 'react-hot-toast'
+import Layout from './Layout'
 
 const ConfirmDialog = ({ open, onClose, onConfirm }) => {
   if (!open) return null
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800">Delete this post?</h3>
-        <p className="text-sm text-gray-600">This action cannot be undone. Are you sure you want to proceed?</p>
-        <div className="flex justify-end gap-3 pt-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+        <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto">
+          <Trash2 className="w-6 h-6 text-red-600" />
+        </div>
+        <div className="text-center">
+          <h3 className="text-lg font-semibold text-slate-800">Delete this post?</h3>
+          <p className="text-sm text-slate-500 mt-1">This action cannot be undone.</p>
+        </div>
+        <div className="flex gap-3 pt-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-800 flex items-center gap-1"
+            className="flex-1 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition"
           >
-            <X className="w-4 h-4" /> Cancel
+            Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white flex items-center gap-1"
+            className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition"
           >
-            <Check className="w-4 h-4" /> Confirm
+            Delete
           </button>
         </div>
       </div>
@@ -43,7 +49,7 @@ const PostDetails = () => {
   const [description, setDescription] = useState('')
   const [confirmOpen, setConfirmOpen] = useState(false)
 
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     setLoading(true)
     setError(false)
     try {
@@ -51,12 +57,12 @@ const PostDetails = () => {
       setPost(res.data)
       setTitle(res.data.title)
       setDescription(res.data.description)
-    } catch (err) {
+    } catch {
       setError(true)
     } finally {
       setLoading(false)
     }
-  }
+  }, [id])
 
   const handleUpdate = async () => {
     setUpdating(true)
@@ -65,7 +71,7 @@ const PostDetails = () => {
       toast.success('Post updated successfully')
       setIsEditing(false)
       fetchPost()
-    } catch (err) {
+    } catch {
       toast.error('Failed to update post')
     } finally {
       setUpdating(false)
@@ -78,7 +84,7 @@ const PostDetails = () => {
       await axiosInstance.delete(`/admin/blogs/${id}`)
       toast.success('Post deleted successfully')
       navigate('/posts')
-    } catch (err) {
+    } catch {
       toast.error('Failed to delete post')
     } finally {
       setDeleting(false)
@@ -88,117 +94,131 @@ const PostDetails = () => {
 
   useEffect(() => {
     fetchPost()
-  }, [id])
+  }, [fetchPost])
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-600" />
-      </div>
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        </div>
+      </Layout>
     )
   }
 
   if (error || !post) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
-        <p className="text-lg text-gray-700">Blog post not found.</p>
-        <button
-          onClick={() => navigate('/posts')}
-          className="px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-md flex items-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Blogs
-        </button>
-      </div>
+      <Layout>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center px-4">
+          <p className="text-slate-600">Blog post not found.</p>
+          <button
+            onClick={() => navigate('/posts')}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to Posts
+          </button>
+        </div>
+      </Layout>
     )
   }
 
   return (
-    <div className="min-h-screen pt-[90px] px-4 py-10 bg-gray-50">
+    <Layout>
       <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleDelete} />
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow p-4 md:p-6 space-y-8">
-        <div className="aspect-video overflow-hidden rounded-xl">
-          <img
-            src={post.imageUrl}
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-          <div className="flex-1">
-            {isEditing ? (
-              <input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full text-2xl font-semibold px-4 py-2 rounded-md bg-gray-100 focus:ring-2 focus:ring-black focus:outline-none"
-              />
-            ) : (
-              <h2 className="text-2xl font-semibold">{post.title}</h2>
-            )}
-          </div>
-
-          <div className="flex gap-2 flex-shrink-0">
+      <div className="p-6 md:p-8">
+        {/* Back + actions bar */}
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <button
+            onClick={() => navigate('/posts')}
+            className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-800 transition"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to Posts
+          </button>
+          <div className="flex gap-2">
             {isEditing ? (
               <>
                 <button
                   onClick={handleUpdate}
                   disabled={updating}
-                  className="text-white bg-black hover:bg-gray-800 px-4 py-2 rounded-md flex items-center gap-2 transition disabled:opacity-50"
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
                 >
-                  {updating ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
+                  {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   Save
                 </button>
                 <button
-                  onClick={() => setIsEditing(false)}
-                  className="text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md flex items-center gap-2 transition"
+                  onClick={() => { setIsEditing(false); setTitle(post.title); setDescription(post.description) }}
+                  className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition"
                 >
-                  Cancel
+                  <X className="w-4 h-4" /> Cancel
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
-                className="text-white bg-black hover:bg-gray-800 px-4 py-2 rounded-md flex items-center gap-2 transition"
+                className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
               >
-                <Pencil className="w-4 h-4" />
-                Edit
+                <Pencil className="w-4 h-4" /> Edit
               </button>
             )}
             <button
               onClick={() => setConfirmOpen(true)}
               disabled={updating || deleting}
-              className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md flex items-center gap-2 transition disabled:opacity-50"
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
             >
-              {deleting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Trash2 className="w-4 h-4" />
-              )}
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
               Delete
             </button>
           </div>
         </div>
 
-        <div>
-          {isEditing ? (
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 rounded-md bg-gray-100 min-h-[180px] focus:ring-2 focus:ring-black focus:outline-none"
-            />
-          ) : (
-            <p className="text-gray-700 text-base leading-relaxed whitespace-pre-line">
-              {post.description}
-            </p>
-          )}
+        {/* Post card */}
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          {/* Image */}
+          <div className="aspect-video bg-slate-100">
+            {post.imageUrl ? (
+              <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <ImageOff className="w-12 h-12 text-slate-300" />
+              </div>
+            )}
+          </div>
+
+          <div className="p-6 md:p-8 space-y-6">
+            {/* Title */}
+            <div>
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Title</label>
+              {isEditing ? (
+                <input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="mt-1.5 w-full text-xl font-semibold px-4 py-2.5 rounded-lg bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+                />
+              ) : (
+                <h2 className="mt-1.5 text-xl font-bold text-slate-800">{post.title}</h2>
+              )}
+            </div>
+
+            {/* Divider */}
+            <hr className="border-slate-100" />
+
+            {/* Description */}
+            <div>
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Description</label>
+              {isEditing ? (
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="mt-1.5 w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none min-h-[200px] text-sm"
+                />
+              ) : (
+                <p className="mt-1.5 text-slate-600 text-sm leading-relaxed whitespace-pre-line">{post.description}</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }
 

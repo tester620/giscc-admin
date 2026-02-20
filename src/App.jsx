@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Login from './Login'
 import Home from './Home'
 import { Toaster } from 'react-hot-toast'
-import Header from './Header'
 import Posts from './Posts'
 import PostDetails from './PostDetails'
 import Account from './Account'
@@ -12,7 +11,6 @@ import AddBlog from './AddBlog'
 const App = () => {
   return (
     <Router>
-      <Header/>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Home />} />
@@ -20,11 +18,8 @@ const App = () => {
         <Route path="/post/:id" element={<PostDetails />} />
         <Route path="/account" element={<Account />} />
         <Route path="/add-post" element={<AddBlog />} />
-
-
-
       </Routes>
-      <Toaster/>
+      <Toaster position="top-right" />
     </Router>
   )
 }
