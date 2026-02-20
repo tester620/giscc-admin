@@ -15,7 +15,10 @@ const Login = () => {
     e.preventDefault()
     setLoading(true)
     try {
-      await axiosInstance.post('/auth/login', { email, password })
+      const res = await axiosInstance.post('/auth/login', { email, password })
+      if (res.data?.token) {
+        localStorage.setItem('token', res.data.token)
+      }
       toast.success('Login successful')
       navigate('/dashboard')
     } catch (error) {

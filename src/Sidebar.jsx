@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, FileText, Plus, User, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, FileText, Plus, User, LogOut, Menu, X, CalendarDays, Images } from 'lucide-react'
 
 const navLinks = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/posts', label: 'Posts', icon: FileText },
   { to: '/add-post', label: 'Add Post', icon: Plus },
+  { to: '/events', label: 'Events', icon: CalendarDays },
+  { to: '/gallery', label: 'Gallery', icon: Images },
   { to: '/account', label: 'Account', icon: User },
 ]
 
@@ -15,6 +17,7 @@ const Sidebar = () => {
   const navigate = useNavigate()
 
   const handleLogout = () => {
+    localStorage.removeItem('token')
     navigate('/')
     setOpen(false)
   }
