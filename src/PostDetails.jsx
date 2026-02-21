@@ -175,8 +175,8 @@ const PostDetails = () => {
         <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           {/* Image */}
           <div className="aspect-video bg-slate-100">
-            {post.imageUrl ? (
-              <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
+            {post.image ? (
+              <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <ImageOff className="w-12 h-12 text-slate-300" />
