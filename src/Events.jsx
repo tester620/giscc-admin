@@ -89,9 +89,9 @@ const Events = () => {
                 className="group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
               >
                 <div className="h-44 bg-slate-100 overflow-hidden">
-                  {event.image ? (
+                  {event.imageUrl ? (
                     <img
-                      src={event.image}
+                      src={event.imageUrl}
                       alt={event.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
