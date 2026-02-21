@@ -109,9 +109,9 @@ const Gallery = () => {
                 className="group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
               >
                 <div className="aspect-square bg-slate-100 overflow-hidden">
-                  {item.image ? (
+                  {item.imageUrl ? (
                     <img
-                      src={item.image}
+                      src={item.imageUrl}
                       alt={item.title || 'Gallery image'}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />

@@ -195,8 +195,8 @@ const EventDetails = () => {
 
         <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="aspect-video bg-slate-100">
-            {event.image ? (
-              <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
+            {event.imageUrl ? (
+              <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <ImageOff className="w-12 h-12 text-slate-300" />
